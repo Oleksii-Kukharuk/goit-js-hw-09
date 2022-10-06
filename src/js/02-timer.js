@@ -22,7 +22,6 @@ const timer = {
   refs: {},
   start(rootSelector, deadline) {
     const delta = deadline.getTime() - Date.now();
-
     if (delta <= 0) {
       Notify.failure(`Please choose a date in the future`, {
         position: `center-center`,
@@ -43,7 +42,7 @@ const timer = {
     this.getRefs(rootSelector);
 
     this.intervalId = setInterval(() => {
-      const delta = deadline.getTime() - Date.now;
+      const delta = deadline.getTime() - Date.now();
       console.log(`delta`, delta);
     }, 1000);
   },
