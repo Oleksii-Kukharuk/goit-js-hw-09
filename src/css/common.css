@@ -16,3 +16,35 @@ img {
   display: block;
   max-width: 100%;
 }
+
+.timer {
+  padding: 100px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.value {
+  text-decoration: none;
+  font-family: 'Raleway';
+  font-weight: 700;
+  font-size: 90px;
+  line-height: 1.19;
+  color: #212121;
+
+  margin-right: 94px;
+}
+
+.label {
+  list-style: none;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.14;
+  letter-spacing: 0.02em;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

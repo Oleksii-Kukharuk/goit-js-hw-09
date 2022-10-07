@@ -4,8 +4,9 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const startBtnRef = document.querySelector('[data-start]');
 const timerRef = document.querySelector('.timer');
+const inputRef = document.querySelector('#datetime-picker');
 
-let DATA = null;
+startBtnRef.setAttribute('disabled', '');
 
 const options = {
   enableTime: true,
@@ -13,49 +14,42 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    console.log(selectedDates[0]);
-    if (selectedDates[0] < new Date()) {
-      // если выбраное время меньше текущего (прям вот текущего-текущего)
-      Notify.failure('Please choose a date in the future');
-      // вместо алерта выводим меседж
-      this.startBtn.disabled = true;
-      //делаем кнопку не активной (она может быть активной после прошлых действий)
+    const delta = selectedDates[0].getTime() - Date.now();
+
+    if (delta <= 0) {
+      Notify.failure('you should choose the future time', this.notifyOptions);
       return;
-      // обрываем функцию
+    } else {
+      startBtnRef.removeAttribute('disabled');
+      startBtnRef.addEventListener('click', onStartBtnClick);
     }
-    timer.startBtn.classList.add('is_active');
-    //добавляем класс css (украшательство)
-    timer.startBtn.disabled = false;
-    //делаем кноку старт активной
-    timer.selectedDates = selectedDates[0];
+
+    function onStartBtnClick() {
+      timer.start(timerRef, selectedDates[0]);
+    }
   },
 };
+
 flatpickr('#datetime-picker', options);
 
 const timer = {
   intervalId: null,
   refs: {},
+  notifyOptions: {
+    position: 'center-center',
+    backOverlay: true,
+    clickToClose: true,
+    closeButton: true,
+  },
+
   start(rootSelector, deadline) {
     if (!deadline) {
       return;
     }
-    const delta = deadline.getTime() - Date.now();
-    if (delta <= 0) {
-      Notify.failure(`Please choose a date in the future`, {
-        position: `center-center`,
-        backOverlay: true,
-        clickToClose: true,
-        closeButton: true,
-      });
-      return;
-    }
+    startBtnRef.setAttribute('disabled', '');
+    inputRef.setAttribute('disabled', '');
 
-    Notify.success(`good job`, {
-      position: `center-center`,
-      backOverlay: true,
-      clickToClose: true,
-      closeButton: true,
-    });
+    const delta = deadline.getTime() - Date.now();
 
     function convertMs(ms) {
       const second = 1000;
@@ -77,20 +71,15 @@ const timer = {
       const diff = deadline.getTime() - Date.now();
       if (diff <= 1000) {
         clearInterval(this.intervalId);
-        Notify.success(`deadlin`, {
-          position: `center-center`,
-          backOverlay: true,
-          clickToClose: true,
-          closeButton: true,
-        });
+        Notify.success(`here we go`, this.notifyOptions);
       }
       const data = convertMs(diff);
 
       console.log(data);
-      this.refs.days.textContent = this.zeroAdd(data.days);
-      this.refs.hours.textContent = this.zeroAdd(data.hours);
-      this.refs.minutes.textContent = this.zeroAdd(data.minutes);
-      this.refs.seconds.textContent = this.zeroAdd(data.seconds);
+
+      Object.entries(data).forEach(([name, value]) => {
+        this.refs[name].textContent = this.zeroAdd(value);
+      });
     }, 1000);
   },
   getRefs(rootSelector) {
@@ -103,5 +92,3 @@ const timer = {
     return String(value).padStart(2, '0');
   },
 };
-
-startBtnRef.addEventListener('click', timer.start(timerRef, DATA));
