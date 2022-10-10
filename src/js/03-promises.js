@@ -11,9 +11,9 @@ function createPromise(position, delay) {
   return (promisse = new Promise((resolve, reject) => {
     setTimeout(() => {
       if (shouldResolve) {
-        resolve(`Fulfilled promise ${position} in ${delay}ms`); // Fulfill
+        resolve({ position, delay }); // Fulfill
       } else {
-        reject(`Rejcted promise ${position} in ${delay}ms`); // Reject
+        reject({ position, delay }); // Reject
       }
     }, delay);
   }));
@@ -35,11 +35,11 @@ function clickHandle(event) {
 
   for (let i = 1; i <= amountTrue; i += 1) {
     createPromise(i, delayTrue)
-      .then(result => {
-        Notify.success(result);
+      .then(({ position, delay }) => {
+        Notify.success(`Fulfilled promise ${position} in ${delay}ms`);
       })
-      .catch(result => {
-        Notify.failure(result);
+      .catch(({ position, delay }) => {
+        Notify.failure(`Rejcted promise ${position} in ${delay}ms`);
       });
     delayTrue += stepTrue;
   }
