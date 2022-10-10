@@ -8,15 +8,15 @@ const formRef = document.querySelector('form');
 function createPromise(position, delay) {
   const shouldResolve = Math.random() > 0.3;
 
-  const promisse = new Promise((resolve, reject) => {
+  return (promisse = new Promise((resolve, reject) => {
     setTimeout(() => {
       if (shouldResolve) {
-        resolve = Notify.success(`Fulfilled promise ${position} in ${delay}ms`); // Fulfill
+        resolve(`Fulfilled promise ${position} in ${delay}ms`); // Fulfill
       } else {
-        reject = Notify.failure(`Rejcted promise ${position} in ${delay}ms`); // Reject
+        reject(`Rejcted promise ${position} in ${delay}ms`); // Reject
       }
     }, delay);
-  });
+  }));
 }
 
 function clickHandle(event) {
@@ -34,7 +34,13 @@ function clickHandle(event) {
   let amountTrue = Number(amount.value);
 
   for (let i = 1; i <= amountTrue; i += 1) {
-    createPromise(i, delayTrue);
+    createPromise(i, delayTrue)
+      .then(result => {
+        Notify.success(result);
+      })
+      .catch(result => {
+        Notify.failure(result);
+      });
     delayTrue += stepTrue;
   }
 }

@@ -51,20 +51,6 @@ const timer = {
 
     const delta = deadline.getTime() - Date.now();
 
-    function convertMs(ms) {
-      const second = 1000;
-      const minute = second * 60;
-      const hour = minute * 60;
-      const day = hour * 24;
-
-      const days = Math.floor(ms / day);
-      const hours = Math.floor((ms % day) / hour);
-      const minutes = Math.floor(((ms % day) % hour) / minute);
-      const seconds = Math.floor((((ms % day) % hour) % minute) / second);
-
-      return { days, hours, minutes, seconds };
-    }
-
     this.getRefs(rootSelector);
 
     this.intervalId = setInterval(() => {
@@ -73,7 +59,7 @@ const timer = {
         clearInterval(this.intervalId);
         Notify.success(`here we go`, this.notifyOptions);
       }
-      const data = convertMs(diff);
+      const data = this.convertMs(diff);
 
       console.log(data);
 
@@ -82,6 +68,21 @@ const timer = {
       });
     }, 1000);
   },
+
+  convertMs(ms) {
+    const second = 1000;
+    const minute = second * 60;
+    const hour = minute * 60;
+    const day = hour * 24;
+
+    const days = Math.floor(ms / day);
+    const hours = Math.floor((ms % day) / hour);
+    const minutes = Math.floor(((ms % day) % hour) / minute);
+    const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+
+    return { days, hours, minutes, seconds };
+  },
+
   getRefs(rootSelector) {
     this.refs.days = rootSelector.querySelector('[data-days]');
     this.refs.hours = rootSelector.querySelector('[data-hours]');
